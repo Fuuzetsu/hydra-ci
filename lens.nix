@@ -35,7 +35,7 @@ rec {
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
     in
-     haskellPackages.cabal.mkDerivation (lensT { version = "HEAD"; src = <lens>; });
+     haskellPackages.cabal.mkDerivation (lensT { version = "HEAD"; src = <lens>; })));
 
   lens_4_3_3 = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
     let
@@ -45,5 +45,5 @@ rec {
      haskellPackages.cabal.mkDerivation (lensT {
        version = "4.3.3";
        sha256 = "0k7qslnh15xnrj86wwsp0mvz6g363ma4g0dxkmvvg4sa1bxljr1f"; }
-    );
+    )));
 }
