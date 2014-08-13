@@ -12,7 +12,7 @@ rec {
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
     in
     haskellPackages.cabal.mkDerivation (self: {
-      pname = "krpc";
+      pname = "HEAD";
       version = "0.6.1.0";
       src = <krpc>;
       buildDepends = with haskellPackages; [
@@ -30,4 +30,24 @@ rec {
         platforms = self.ghc.meta.platforms;
       };
     })));
+
+  bencoding = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
+    let
+      pkgs = import <nixpkgs> { inherit system; };
+      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+    in
+    haskellPackages.cabal.mkDerivation (self: {
+      pname = "bencoding";
+      version = "HEAD";
+      src = <bencoding>;
+      buildDepends = with haskellPackages; [ attoparsec deepseq mtl text ];
+      testDepends = with haskellPackages; [ attoparsec hspec QuickCheck ];
+      meta = {
+        homepage = "https://github.com/cobit/bencoding";
+        description = "A library for encoding and decoding of BEncode data";
+        license = self.stdenv.lib.licenses.bsd3;
+        platforms = self.ghc.meta.platforms;
+      };
+    })));
+
 }
