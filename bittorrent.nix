@@ -12,8 +12,8 @@ rec {
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
     in
     haskellPackages.cabal.mkDerivation (self: {
-      pname = "HEAD";
-      version = "0.6.1.0";
+      pname = "krpc";
+      version = "HEAD";
       src = <krpc>;
       buildDepends = with haskellPackages; [
         bencoding dataDefaultClass liftedBase monadControl monadLogger mtl
