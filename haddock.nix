@@ -36,7 +36,7 @@ rec {
       src = <haddock>;
       buildDepends = with haskellPackages;
                        [ Cabal deepseq filepath ghcPaths xhtml haddockLibrary
-                         autoconf libxslt libxml2 texLive
+                         pkgs.autoconf pkgs.libxslt pkgs.libxml2 pkgs.texLive
                        ];
       testDepends = with haskellPackages; [ Cabal deepseq filepath hspec QuickCheck ];
       isLibrary = true;
