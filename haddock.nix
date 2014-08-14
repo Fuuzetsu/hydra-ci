@@ -6,7 +6,7 @@ let
   genAttrs = (import <nixpkgs> {}).lib.genAttrs;
 in
 rec {
-  haddock-library = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
+  haddockLibrary = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
