@@ -24,4 +24,26 @@ rec {
         platforms = self.ghc.meta.platforms;
       };
     })));
+
+  haddock = genAttrs [ "ghc783" ] (ghcVer: genAttrs supportedPlatforms (system:
+    let
+      pkgs = import <nixpkgs> { inherit system; };
+      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+    in
+    haskellPackages.cabal.mkDerivation (self: {
+      pname = "haddock";
+      version = "2.14.4";
+      src = <haddock>;
+      buildDepends = with haskellPackages;
+                       [ Cabal deepseq filepath ghcPaths xhtml haddockLibrary
+                         autoconf libxslt libxml2 texLive
+                       ];
+      testDepends = with haskellPackages; [ Cabal deepseq filepath hspec QuickCheck ];
+      isLibrary = true;
+      isExecutable = true;
+      enableSplitObjs = false;
+      noHaddock = false;
+      doCheck = true;
+    })));
+
 }
