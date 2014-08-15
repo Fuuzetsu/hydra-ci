@@ -97,14 +97,13 @@ rec {
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       yiJob = withJob ghcVer system yi;
-      PastePipeJob = withJob ghcVer system PastePipe;
     in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi-haskell-utils";
       version = "0.1.0.0";
       src = <yi-haskell-utils>;
       buildDepends = with haskellPackages; [
-        dataDefault derive ghcMod lens network PastePipeJob split yiJob
+        dataDefault derive ghcMod lens network PastePipe split yiJob
       ];
       meta = {
         homepage = "https://github.com/Fuuzetsu/yi-haskell-utils";
