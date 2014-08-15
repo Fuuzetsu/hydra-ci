@@ -4,6 +4,7 @@
 }:
 let
   genAttrs = (import <nixpkgs> {}).lib.genAttrs;
+  withJob = g: s: (import <nixpkgs> {}).lib.getAttrFromPath [ g s ];
 in
 rec {
   yi = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
@@ -54,13 +55,14 @@ rec {
     let
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      yiJob = withJob ghcVer system yi;
     in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi-contrib";
       version = "0.9.1";
       src = <yi-repo> + "/yi-contrib";
       buildDepends = with haskellPackages; [
-        filepath lens mtl split time transformersBase yi
+        filepath lens mtl split time transformersBase yiJob
       ];
       meta = {
         homepage = "http://haskell.org/haskellwiki/Yi";
@@ -75,12 +77,13 @@ rec {
     let
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      yiJob = withJob ghcVer system yi;
     in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi-monokai";
       version = "0.1.1.2";
       src = <yi-monokai>;
-      buildDepends = with haskellPackages; [ yi ];
+      buildDepends = with haskellPackages; [ yiJob ];
       meta = {
         homepage = "https://github.com/Fuuzetsu/yi-monokai";
         description = "Monokai colour theme for the Yi text editor";
@@ -93,13 +96,15 @@ rec {
     let
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      yiJob = withJob ghcVer system yi;
+      PastePipeJob = withJob ghcVer system PastePipe;
     in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi-haskell-utils";
       version = "0.1.0.0";
       src = <yi-haskell-utils>;
       buildDepends = with haskellPackages; [
-        dataDefault derive ghcMod lens network PastePipe split yi
+        dataDefault derive ghcMod lens network PastePipeJob split yiJob
       ];
       meta = {
         homepage = "https://github.com/Fuuzetsu/yi-haskell-utils";
