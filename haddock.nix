@@ -44,7 +44,7 @@ rec {
       isExecutable = true;
       enableSplitObjs = false;
       noHaddock = false;
-      doCheck = true;
+      doCheck = false;
     })));
 
 }
