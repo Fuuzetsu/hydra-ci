@@ -98,7 +98,7 @@ rec {
       pname = "yi-haskell-utils";
       version = "0.1.0.0";
       src = <yi-haskell-utils>;
-      buildDepends = [
+      buildDepends = with haskellPackages; [
         dataDefault derive ghcMod lens network PastePipe split yi
       ];
       meta = {
