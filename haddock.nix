@@ -28,7 +28,8 @@ rec {
   haddock = genAttrs [ "ghc783" ] (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
-      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      #haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      haskellPackages = pkgs.haskellPackages_ghc783;
     in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "haddock";
