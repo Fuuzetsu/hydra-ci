@@ -14,7 +14,7 @@ rec {
     haskellPackages.cabal.mkDerivation (self: {
       pname = "haddock-library";
       version = "1.1.0";
-      src = <haddock> + "/haddock-library";
+      src = <haddock-repo> + "/haddock-library";
       buildDepends = with haskellPackages; [ deepseq ];
       testDepends = with haskellPackages; [ baseCompat deepseq hspec QuickCheck ];
       meta = {
@@ -25,16 +25,15 @@ rec {
       };
     })));
 
-  haddock = genAttrs [ "ghc783" ] (ghcVer: genAttrs supportedPlatforms (system:
+  haddock = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
-      #haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
-      haskellPackages = pkgs.haskellPackages_ghc783;
+      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
     in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "haddock";
       version = "2.14.4";
-      src = <haddock>;
+      src = <haddock-repo>;
       buildDepends = with haskellPackages;
                        [ Cabal deepseq filepath ghcPaths xhtml haddockLibrary
                          pkgs.autoconf pkgs.libxslt pkgs.libxml2 pkgs.texLive

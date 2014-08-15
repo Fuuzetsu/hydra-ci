@@ -14,7 +14,7 @@ rec {
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi";
       version = "0.9.1";
-      src = <yi> + "/yi";
+      src = <yi-repo> + "/yi";
       buildDepends = with haskellPackages; [
         # As imported above
         binary Cabal cautiousFile concreteTyperep dataDefault derive Diff
@@ -58,7 +58,7 @@ rec {
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi-contrib";
       version = "0.9.1";
-      src = <yi> + "/yi-contrib";
+      src = <yi-repo> + "/yi-contrib";
       buildDepends = with haskellPackages; [
         filepath lens mtl split time transformersBase yi
       ];
