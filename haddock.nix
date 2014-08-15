@@ -25,7 +25,7 @@ rec {
       };
     })));
 
-  haddock = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
+  haddock = genAttrs [ "ghc783" ] (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
