@@ -30,12 +30,12 @@ let
 
 in
 rec {
-  # lens = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
-  #   let
-  #     pkgs = import <nixpkgs> { inherit system; };
-  #     haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
-  #   in
-  #    haskellPackages.cabal.mkDerivation (lensT haskellPackages { version = "HEAD"; src = <lens>; })));
+  lens = genAttrs supportedCompilers (ghcVer: genAttrs [ "x86_64-linux" ] (system:
+    let
+      pkgs = import <nixpkgs> { inherit system; };
+      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+    in
+     haskellPackages.cabal.mkDerivation (lensT haskellPackages { version = "HEAD"; src = <lens>; })));
 
   lens_4_3_3 = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
     let
