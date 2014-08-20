@@ -7,14 +7,25 @@ let
   genAttrs = pkgs.lib.genAttrs;
   withJob = g: s: pkgs.lib.getAttrFromPath [ g s ];
   jail = ps: pkgs.lib.overrideDerivation ps.lens (as: { jailbreak = true; });
+  breakCabal = p: hp: pkgs.lib.overrideDerivation p (as: {
+        buildInputs = [ hp.Cabal_1_20_0_2 ] ++ as.buildInputs;
+  });
 in
 rec {
   yi = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
-      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
-      lensJail = jail haskellPackages;
-      glibCabal = haskellPackages.glib.override { Cabal = self.Cabal_1_18_1_3; };
+      haskellPackagesP = pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+
+      haskellPackages = haskellPackagesP.override {
+        extension = se: su: {
+          lens = su.lens.override { aeson = se.aeson_0_8_0_0; scientific = se.scientific_0_3_3_0; };
+          glib = breakCabal haskellPackagesP.glib haskellPackagesP;
+          cairo = breakCabal haskellPackagesP.cairo haskellPackagesP;
+          pango = breakCabal haskellPackagesP.pango haskellPackagesP;
+        };
+      };
+    in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi";
       version = "0.9.1";
@@ -22,11 +33,11 @@ rec {
       buildDepends = with haskellPackages; [
         # As imported above
         binary Cabal cautiousFile concreteTyperep dataDefault derive Diff
-        dlist dyre filepath fingertree hashable hint lensJail mtl
+        dlist dyre filepath fingertree hashable hint lens mtl
         parsec pointedlist QuickCheck random regexBase regexTdfa safe
         split time transformersBase uniplate unixCompat unorderedContainers
         utf8String vty xdgBasedir tfRandom text cabalInstall
-      ] ++ (if withPango then [ pango gtk glibCabal ] else [ ]);
+      ] ++ (if withPango then [ pango gtk glib ] else [ ]);
       buildTools = [ haskellPackages.alex ];
       testDepends = with haskellPackages; [ filepath HUnit QuickCheck tasty
                                             tastyHunit tastyQuickcheck ];
@@ -57,16 +68,20 @@ rec {
   yi-contrib = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
-      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       yiJob = withJob ghcVer system yi;
-      lensJail = jail haskellPackages;
+      haskellPackagesP =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      haskellPackages = haskellPackagesP.override {
+        extension = se: su: {
+          lens = su.lens.override { aeson = se.aeson_0_8_0_0; scientific = se.scientific_0_3_3_0; };
+        };
+      };
     in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi-contrib";
       version = "0.9.1";
       src = <yi-repo> + "/yi-contrib";
       buildDepends = with haskellPackages; [
-        filepath lensJail mtl split time transformersBase yiJob
+        filepath lens mtl split time transformersBase yiJob
       ];
       meta = {
         homepage = "http://haskell.org/haskellwiki/Yi";
@@ -99,16 +114,20 @@ rec {
   yi-haskell-utils = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
-      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       yiJob = withJob ghcVer system yi;
-      lensJail = jail haskellPackages;
+      haskellPackagesP =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      haskellPackages = haskellPackagesP.override {
+        extension = se: su: {
+          lens = su.lens.override { aeson = se.aeson_0_8_0_0; scientific = se.scientific_0_3_3_0; };
+        };
+      };
     in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi-haskell-utils";
       version = "0.1.0.0";
       src = <yi-haskell-utils>;
       buildDepends = with haskellPackages; [
-        dataDefault derive ghcMod lensJail network PastePipe split yiJob
+        dataDefault derive ghcMod lens network PastePipe split yiJob
       ];
       meta = {
         homepage = "https://github.com/Fuuzetsu/yi-haskell-utils";
