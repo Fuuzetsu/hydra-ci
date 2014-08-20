@@ -14,7 +14,7 @@ rec {
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       lensJail = jail haskellPackages;
-    in
+      glibCabal = haskellPackages.glib.override { Cabal = self.Cabal_1_18_1_3; };
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi";
       version = "0.9.1";
@@ -26,7 +26,7 @@ rec {
         parsec pointedlist QuickCheck random regexBase regexTdfa safe
         split time transformersBase uniplate unixCompat unorderedContainers
         utf8String vty xdgBasedir tfRandom text cabalInstall
-      ] ++ (if withPango then [ pango gtk glib ] else [ ]);
+      ] ++ (if withPango then [ pango gtk glibCabal ] else [ ]);
       buildTools = [ haskellPackages.alex ];
       testDepends = with haskellPackages; [ filepath HUnit QuickCheck tasty
                                             tastyHunit tastyQuickcheck ];
