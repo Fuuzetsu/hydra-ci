@@ -6,7 +6,6 @@ let
   pkgs = import <nixpkgs> {};
   genAttrs = pkgs.lib.genAttrs;
   withJob = g: s: pkgs.lib.getAttrFromPath [ g s ];
-  jail = ps: pkgs.lib.overrideDerivation ps.lens (as: { jailbreak = true; });
   breakCabal = p: hp: pkgs.lib.overrideDerivation p (as: {
         buildInputs = [ hp.Cabal_1_20_0_2 ] ++ as.buildInputs;
   });
@@ -19,7 +18,6 @@ rec {
 
       haskellPackages = haskellPackagesP.override {
         extension = se: su: {
-          lens = su.lens.override { scientific = se.scientific_0_3_3_0; };
           glib = breakCabal haskellPackagesP.glib haskellPackagesP;
           cairo = breakCabal haskellPackagesP.cairo haskellPackagesP;
           pango = breakCabal haskellPackagesP.pango haskellPackagesP;
@@ -69,12 +67,7 @@ rec {
     let
       pkgs = import <nixpkgs> { inherit system; };
       yiJob = withJob ghcVer system yi;
-      haskellPackagesP =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
-      haskellPackages = haskellPackagesP.override {
-        extension = se: su: {
-          lens = su.lens.override { scientific = se.scientific_0_3_3_0; };
-        };
-      };
+      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
     in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi-contrib";
@@ -118,7 +111,7 @@ rec {
       haskellPackagesP =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       haskellPackages = haskellPackagesP.override {
         extension = se: su: {
-          lens = su.lens.override { scientific = se.scientific_0_3_3_0; ghcMod = se.ghcMod_5_0_1; };
+          ghcMod = se.ghcMod_5_0_1;
         };
       };
     in
