@@ -19,7 +19,7 @@ rec {
 
       haskellPackages = haskellPackagesP.override {
         extension = se: su: {
-          lens = su.lens.override { aeson = se.aeson_0_8_0_0; scientific = se.scientific_0_3_3_0; };
+          lens = su.lens.override { scientific = se.scientific_0_3_3_0; };
           glib = breakCabal haskellPackagesP.glib haskellPackagesP;
           cairo = breakCabal haskellPackagesP.cairo haskellPackagesP;
           pango = breakCabal haskellPackagesP.pango haskellPackagesP;
@@ -72,7 +72,7 @@ rec {
       haskellPackagesP =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       haskellPackages = haskellPackagesP.override {
         extension = se: su: {
-          lens = su.lens.override { aeson = se.aeson_0_8_0_0; scientific = se.scientific_0_3_3_0; };
+          lens = su.lens.override { scientific = se.scientific_0_3_3_0; };
         };
       };
     in
@@ -118,7 +118,7 @@ rec {
       haskellPackagesP =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       haskellPackages = haskellPackagesP.override {
         extension = se: su: {
-          lens = su.lens.override { aeson = se.aeson_0_8_0_0; scientific = se.scientific_0_3_3_0; };
+          lens = su.lens.override { scientific = se.scientific_0_3_3_0; };
         };
       };
     in
