@@ -118,7 +118,7 @@ rec {
       haskellPackagesP =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       haskellPackages = haskellPackagesP.override {
         extension = se: su: {
-          lens = su.lens.override { scientific = se.scientific_0_3_3_0; };
+          lens = su.lens.override { scientific = se.scientific_0_3_3_0; ghcMod = se.ghcMod_5_0_1; };
         };
       };
     in
