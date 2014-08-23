@@ -1,11 +1,31 @@
 { supportedPlatforms ? [ "i686-linux" "x86_64-linux" ]
-, supportedCompilers ? [ "ghc742" "ghc763" "ghc783" ]
+, supportedCompilers ? [ "ghc742" "ghc763" "ghc782" "ghc783" ]
 }:
 
 let
   genAttrs = (import <nixpkgs> {}).lib.genAttrs;
 in
 rec {
+
+  haddock = genAttrs [ "ghc782" "ghc783" ] (ghcVer: genAttrs supportedPlatforms (system:
+    let
+      pkgs = import <nixpkgs> { inherit system; };
+      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      haddockApiJob = pkgs.lib.getAttrFromPath [ ghcVer system ] haddockApi;
+    in
+    haskellPackages.cabal.mkDerivation (self: {
+      pname = "haddock";
+      version = "2.15.0";
+      src = <haddock-repo>;
+      buildDepends = with haskellPackages; [ haddockApiJob ];
+      testDepends = with haskellPackages; [ Cabal deepseq filepath hspec QuickCheck ];
+      isLibrary = false;
+      isExecutable = true;
+      enableSplitObjs = false;
+      noHaddock = false;
+      preCheck = "unset GHC_PACKAGE_PATH";
+    })));
+
   haddockLibrary = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
@@ -25,26 +45,25 @@ rec {
       };
     })));
 
-  haddock = genAttrs [ "ghc783" ] (ghcVer: genAttrs supportedPlatforms (system:
+  haddockApi = genAttrs [ "ghc782" "ghc783" ] (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       haddockLibraryJob = pkgs.lib.getAttrFromPath [ ghcVer system ] haddockLibrary;
     in
     haskellPackages.cabal.mkDerivation (self: {
-      pname = "haddock";
-      version = "2.14.4";
-      src = <haddock-repo>;
+      pname = "haddock-api";
+      version = "2.15.0";
+      src = <haddock-repo> + "/haddock-api";
       buildDepends = with haskellPackages;
                        [ Cabal deepseq filepath ghcPaths xhtml haddockLibraryJob
                          pkgs.autoconf pkgs.libxslt pkgs.libxml2 pkgs.texLive
                        ];
       testDepends = with haskellPackages; [ Cabal deepseq filepath hspec QuickCheck ];
       isLibrary = true;
-      isExecutable = true;
       enableSplitObjs = false;
       noHaddock = false;
-      doCheck = false;
+      preCheck = "unset GHC_PACKAGE_PATH";
     })));
 
 }
