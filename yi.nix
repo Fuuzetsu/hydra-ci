@@ -6,23 +6,18 @@ let
   pkgs = import <nixpkgs> {};
   genAttrs = pkgs.lib.genAttrs;
   withJob = g: s: pkgs.lib.getAttrFromPath [ g s ];
-  breakCabal = p: hp: pkgs.lib.overrideDerivation p (as: {
-        buildInputs = [ hp.Cabal_1_20_0_2 ] ++ as.buildInputs;
-  });
 in
 rec {
   yi = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackagesP = pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
-
-      haskellPackages = haskellPackagesP.override {
-        extension = se: su: {
-          glib = breakCabal haskellPackagesP.glib haskellPackagesP;
-          cairo = breakCabal haskellPackagesP.cairo haskellPackagesP;
-          pango = breakCabal haskellPackagesP.pango haskellPackagesP;
+      haskellPackages = pkgs.recurseIntoAttrs (haskellPackagesP.override {
+        extension = se: su: rec {
+          Cabal = if ghcVer == "ghc763" then haskellPackagesP.Cabal_1_20_0_2 else null;
+          cabal = su.cabal.override { Cabal = Cabal; };
         };
-      };
+      });
     in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi";
