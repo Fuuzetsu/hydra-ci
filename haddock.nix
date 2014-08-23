@@ -1,5 +1,5 @@
 { supportedPlatforms ? [ "i686-linux" "x86_64-linux" ]
-, supportedCompilers ? [ "ghc742" "ghc763" "ghc782" "ghc783" ]
+, supportedCompilers ? [ "ghc742" "ghc763" "ghc783" ]
 }:
 
 let
@@ -7,7 +7,7 @@ let
 in
 rec {
 
-  haddock = genAttrs [ "ghc782" "ghc783" ] (ghcVer: genAttrs supportedPlatforms (system:
+  haddock = genAttrs [ "ghc783" ] (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
@@ -45,7 +45,7 @@ rec {
       };
     })));
 
-  haddockApi = genAttrs [ "ghc782" "ghc783" ] (ghcVer: genAttrs supportedPlatforms (system:
+  haddockApi = genAttrs [ "ghc783" ] (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
