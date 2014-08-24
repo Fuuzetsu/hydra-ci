@@ -6,6 +6,9 @@ let
   pkgs = import <nixpkgs> {};
   genAttrs = pkgs.lib.genAttrs;
   withJob = g: s: pkgs.lib.getAttrFromPath [ g s ];
+  dontCheckWith = ghcVer: ghcUsed: p: pkgs.lib.overrideDerivation p (attrs: {
+    doCheck = not (ghcVer == ghcUsed);
+  });
 in
 rec {
   yi = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
@@ -16,6 +19,7 @@ rec {
         extension = se: su: rec {
           Cabal = if ghcVer == "ghc763" then haskellPackagesP.Cabal_1_20_0_2 else null;
           cabal = su.cabal.override { Cabal = Cabal; };
+          split = dontCheckWith ghcVer "ghc763" su.split;
         };
       });
     in
@@ -62,7 +66,12 @@ rec {
     let
       pkgs = import <nixpkgs> { inherit system; };
       yiJob = withJob ghcVer system yi;
-      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      haskellPackagesP = pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      haskellPackages = pkgs.recurseIntoAttrs (haskellPackagesP.override {
+        extension = se: su: rec {
+          split = dontCheckWith ghcVer "ghc763" su.split;
+        };
+      });
     in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi-contrib";
@@ -103,12 +112,13 @@ rec {
     let
       pkgs = import <nixpkgs> { inherit system; };
       yiJob = withJob ghcVer system yi;
-      haskellPackagesP =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
-      haskellPackages = haskellPackagesP.override {
-        extension = se: su: {
+      haskellPackagesP = pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      haskellPackages = pkgs.recurseIntoAttrs (haskellPackagesP.override {
+        extension = se: su: rec {
           ghcMod = se.ghcMod_5_0_1;
+          split = dontCheckWith ghcVer "ghc763" su.split;
         };
-      };
+      });
     in
     haskellPackages.cabal.mkDerivation (self: {
       pname = "yi-haskell-utils";
