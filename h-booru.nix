@@ -1,5 +1,5 @@
 { supportedPlatforms ? [ "i686-linux" "x86_64-linux" ]
-, supportedCompilers ? [ "ghc763" "ghc783" ]
+, supportedCompilers ? [ "ghc783" ]
 }:
 
 let
