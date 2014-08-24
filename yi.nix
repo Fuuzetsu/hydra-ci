@@ -144,7 +144,7 @@ rec {
       pname = "word-trie";
       version = "HEAD";
       src = <word-trie>;
-      buildDepends = with haskellPackages; [ binary ]
+      buildDepends = with haskellPackages; [ binary ];
       meta = {
         homepage = "https://github.com/yi-editor/yi";
         description = "Implementation of a finite trie over words";
