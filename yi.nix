@@ -116,7 +116,7 @@ rec {
       haskellPackagesP = pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       haskellPackages = pkgs.recurseIntoAttrs (haskellPackagesP.override {
         extension = se: su: rec {
-          ghcMod = se.ghcMod_5_0_1;
+          ghcMod = se.ghcMod_5_0_1_1;
           split = dontCheckWith ghcVer "ghc763" su.split;
         };
       });
