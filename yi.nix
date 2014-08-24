@@ -7,7 +7,7 @@ let
   genAttrs = pkgs.lib.genAttrs;
   withJob = g: s: pkgs.lib.getAttrFromPath [ g s ];
   dontCheckWith = ghcVer: ghcUsed: p: pkgs.lib.overrideDerivation p (attrs: {
-    doCheck = not (ghcVer == ghcUsed);
+    doCheck = !(ghcVer == ghcUsed);
   });
 in
 rec {
