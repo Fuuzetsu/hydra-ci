@@ -20,6 +20,7 @@ rec {
           Cabal = if ghcVer == "ghc763" then haskellPackagesP.Cabal_1_20_0_2 else null;
           cabal = su.cabal.override { Cabal = Cabal; };
           split = dontCheckWith ghcVer "ghc763" su.split;
+          wordTrie = word-trie;
         };
       });
     in
@@ -33,7 +34,7 @@ rec {
         dlist dyre filepath fingertree hashable hint lens mtl
         parsec pointedlist QuickCheck random regexBase regexTdfa safe
         split time transformersBase uniplate unixCompat unorderedContainers
-        utf8String vty xdgBasedir tfRandom text cabalInstall
+        utf8String vty xdgBasedir tfRandom text cabalInstall wordTrie
       ] ++ (if withPango then [ pango gtk glib ] else [ ]);
       buildTools = [ haskellPackages.alex ];
       testDepends = with haskellPackages; [ filepath HUnit QuickCheck tasty
@@ -134,5 +135,25 @@ rec {
         platforms = self.ghc.meta.platforms;
       };
     })));
+
+  word-trie = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
+    let
+      pkgs = import <nixpkgs> { inherit system; };
+    in
+    haskellPackages.cabal.mkDerivation (self: {
+      pname = "word-trie";
+      version = "HEAD";
+      src = <word-trie>;
+      buildDepends = with haskellPackages; [ binary ]
+      meta = {
+        homepage = "https://github.com/yi-editor/yi";
+        description = "Implementation of a finite trie over words";
+        license = self.stdenv.lib.licenses.gpl2;
+        platforms = self.ghc.meta.platforms;
+        maintainers = with self.stdenv.lib.maintainers; [ fuuzetsu ];
+      };
+    })));
+
+
 
 }
