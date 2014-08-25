@@ -198,7 +198,7 @@ rec {
       src = <yi-language>;
       buildDepends = with haskellPackages; [
         binary dataDefault hashable lens ooPrototypes pointedlist regexBase
-        regexTdfa transformersBase unorderedContainers
+        regexTdfa transformersBase unorderedContainers derive
       ];
       buildTools = with haskellPackages; [ alex ];
       meta = {
