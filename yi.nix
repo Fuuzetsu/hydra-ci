@@ -4,6 +4,7 @@
 }:
 let
   pkgs = import <nixpkgs> {};
+  helpers = import ./utils.nix {};
   genAttrs = pkgs.lib.genAttrs;
   withJob = g: s: pkgs.lib.getAttrFromPath [ g s ];
   dontCheckWith = ghcVer: ghcUsed: p: pkgs.lib.overrideDerivation p (attrs: {
@@ -24,9 +25,9 @@ rec {
         };
       });
     in
-    haskellPackages.cabal.mkDerivation (self: {
+    haskellPackages.cabal.mkDerivation (self: rec {
       pname = "yi";
-      version = "0.9.1";
+      version = helpers.getCabalVersion (src + "/yi.cabal");
       src = <yi-repo> + "/yi";
       buildDepends = with haskellPackages; [
         # As imported above
@@ -74,9 +75,9 @@ rec {
         };
       });
     in
-    haskellPackages.cabal.mkDerivation (self: {
+    haskellPackages.cabal.mkDerivation (self: rec {
       pname = "yi-contrib";
-      version = "0.9.1";
+      version = helpers.getCabalVersion (src + "/yi-contrib.cabal");
       src = <yi-repo> + "/yi-contrib";
       buildDepends = with haskellPackages; [
         filepath lens mtl split time transformersBase yiJob
@@ -96,9 +97,9 @@ rec {
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       yiJob = withJob ghcVer system yi;
     in
-    haskellPackages.cabal.mkDerivation (self: {
+    haskellPackages.cabal.mkDerivation (self: rec {
       pname = "yi-monokai";
-      version = "0.1.1.2";
+      version = helpers.getCabalVersion (src + "/yi-monokai.cabal");
       src = <yi-monokai>;
       buildDepends = with haskellPackages; [ yiJob ];
       meta = {
@@ -121,9 +122,9 @@ rec {
         };
       });
     in
-    haskellPackages.cabal.mkDerivation (self: {
+    haskellPackages.cabal.mkDerivation (self: rec {
       pname = "yi-haskell-utils";
-      version = "0.1.0.0";
+      version = helpers.getCabalVersion (src + "/yi-haskell-utils.cabal");
       src = <yi-haskell-utils>;
       buildDepends = with haskellPackages; [
         dataDefault derive ghcMod lens network PastePipe split yiJob
@@ -141,9 +142,9 @@ rec {
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
     in
-    haskellPackages.cabal.mkDerivation (self: {
+    haskellPackages.cabal.mkDerivation (self: rec {
       pname = "word-trie";
-      version = "HEAD";
+      version = helpers.getCabalVersion (src + "/word-trie.cabal");
       src = <word-trie>;
       buildDepends = with haskellPackages; [ binary ];
       meta = {
