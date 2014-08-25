@@ -20,7 +20,7 @@ rec {
           Cabal = if ghcVer == "ghc763" then haskellPackagesP.Cabal_1_20_0_2 else null;
           cabal = su.cabal.override { Cabal = Cabal; };
           split = dontCheckWith ghcVer "ghc763" su.split;
-          wordTrie = word-trie;
+          wordTrie = withJob ghcVer system word-trie;
         };
       });
     in
