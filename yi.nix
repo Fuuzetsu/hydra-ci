@@ -75,7 +75,12 @@ rec {
       haskellPackagesP = pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       haskellPackages = pkgs.recurseIntoAttrs (haskellPackagesP.override {
         extension = se: su: rec {
+          Cabal = if ghcVer == "ghc763" then haskellPackagesP.Cabal_1_20_0_2 else null;
+          cabal = su.cabal.override { Cabal = Cabal; };
           split = dontCheckWith ghcVer "ghc763" su.split;
+          wordTrie = withJob ghcVer system word-trie;
+          ooPrototypes = withJob ghcVer system oo-prototypes;
+          yiLanguage = withJob ghcVer system yi-language;
         };
       });
     in
