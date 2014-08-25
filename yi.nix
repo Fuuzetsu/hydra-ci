@@ -23,6 +23,7 @@ rec {
           split = dontCheckWith ghcVer "ghc763" su.split;
           wordTrie = withJob ghcVer system word-trie;
           ooPrototypes = withJob ghcVer system oo-prototypes;
+          yiLanguage = withJob ghcVer system yi-language;
         };
       });
     in
@@ -37,11 +38,11 @@ rec {
         parsec pointedlist QuickCheck random regexBase regexTdfa safe
         split time transformersBase uniplate unixCompat unorderedContainers
         utf8String vty xdgBasedir tfRandom text cabalInstall wordTrie
-        ooPrototypes
+        ooPrototypes yiLanguage
       ] ++ (if withPango then [ pango gtk glib ] else [ ]);
       buildTools = [ haskellPackages.alex ];
       testDepends = with haskellPackages; [ filepath HUnit QuickCheck tasty
-                                            tastyHunit tastyQuickcheck ];
+                                            tastyHunit tastyQuickcheck yiLanguage ];
 
       postInstall = ''
         mv $out/bin/yi $out/bin/.yi-wrapped
@@ -150,7 +151,7 @@ rec {
       version = helpers.getCabalVersion (src + "/word-trie.cabal");
       src = <word-trie>;
       buildDepends = with haskellPackages; [ binary derive ];
-      testDepends = with haskellPackages; [ binary hspec QuickCheck ];
+      testDepends = with haskellPackages; [ binary hspec QuickCheck derive ];
       meta = {
         homepage = "https://github.com/yi-editor/yi";
         description = "Implementation of a finite trie over words";
