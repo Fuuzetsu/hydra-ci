@@ -7,9 +7,9 @@ let
   lensT = haskellPackages: attrs: self: ({
       pname = "lens";
       buildDepends = with haskellPackages; [
-        aeson attoparsec bifunctors comonad contravariant distributive
+        attoparsec bifunctors comonad contravariant distributive
         exceptions filepath free hashable mtl parallel primitive
-        profunctors reflection scientific semigroupoids semigroups split
+        profunctors reflection semigroupoids semigroups split
         tagged text transformers transformersCompat unorderedContainers
         vector void zlib
       ];
@@ -37,13 +37,13 @@ rec {
     in
      haskellPackages.cabal.mkDerivation (lensT haskellPackages { version = "HEAD"; src = <lens>; })));
 
-  lens_4_3_3 = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
+  lens_4_4_0_1 = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
     let
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
     in
      haskellPackages.cabal.mkDerivation (lensT haskellPackages {
-       version = "4.3.3";
-       sha256 = "0k7qslnh15xnrj86wwsp0mvz6g363ma4g0dxkmvvg4sa1bxljr1f"; }
+       version = "4.4.0.1";
+       sha256 = "0d1z6jix58g7x9r1jvm335hg2psflqc7w6sq54q486wil55c5vrw"; }
     )));
 }
