@@ -22,6 +22,7 @@ rec {
           cabal = su.cabal.override { Cabal = Cabal; };
           split = dontCheckWith ghcVer "ghc763" su.split;
           wordTrie = withJob ghcVer system word-trie;
+          ooPrototypes = withJob ghcVer system oo-prototypes;
         };
       });
     in
@@ -36,6 +37,7 @@ rec {
         parsec pointedlist QuickCheck random regexBase regexTdfa safe
         split time transformersBase uniplate unixCompat unorderedContainers
         utf8String vty xdgBasedir tfRandom text cabalInstall wordTrie
+        ooPrototypes
       ] ++ (if withPango then [ pango gtk glib ] else [ ]);
       buildTools = [ haskellPackages.alex ];
       testDepends = with haskellPackages; [ filepath HUnit QuickCheck tasty
@@ -68,6 +70,7 @@ rec {
     let
       pkgs = import <nixpkgs> { inherit system; };
       yiJob = withJob ghcVer system yi;
+      ooJob = withJob ghcVer system oo-prototypes;
       haskellPackagesP = pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       haskellPackages = pkgs.recurseIntoAttrs (haskellPackagesP.override {
         extension = se: su: rec {
@@ -156,6 +159,22 @@ rec {
       };
     })));
 
+  oo-prototypes = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
+    let
+      pkgs = import <nixpkgs> { inherit system; };
+      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+    in
+    haskellPackages.cabal.mkDerivation (self: rec {
+      pname = "oo-prototypes";
+      version = helpers.getCabalVersion (src + "/oo-prototypes.cabal");
+      src = <oo-prototypes>;
+      meta = {
+        homepage = "https://github.com/yi-editor/oo-prototypes";
+        description = "Support for OO-like prototypes";
+        license = self.stdenv.lib.licenses.gpl2;
+        platforms = self.ghc.meta.platforms;
+      };
+    })));
 
 
 }
