@@ -178,4 +178,34 @@ rec {
     })));
 
 
+  yi-language = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
+    let
+      pkgs = import <nixpkgs> { inherit system; };
+      haskellPackagesP = pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      haskellPackages = pkgs.recurseIntoAttrs (haskellPackagesP.override {
+        extension = se: su: rec {
+          Cabal = if ghcVer == "ghc763" then haskellPackagesP.Cabal_1_20_0_2 else null;
+          cabal = su.cabal.override { Cabal = Cabal; };
+          ooPrototypes = withJob ghcVer system oo-prototypes;
+        };
+      });
+    in
+    haskellPackages.cabal.mkDerivation (self: rec {
+      pname = "yi-language";
+      version = helpers.getCabalVersion (src + "/yi-language.cabal");
+      src = <yi-language>;
+      buildDepends = with haskellPackages; [
+        binary dataDefault hashable lens ooPrototypes pointedlist regexBase
+        regexTdfa transformersBase unorderedContainers
+      ];
+      buildTools = with haskellPackages; [ alex ];
+      meta = {
+        homepage = "https://github.com/yi-editor/yi-language";
+        description = "Collection of language-related Yi libraries";
+        license = self.stdenv.lib.licenses.gpl2;
+        platforms = self.ghc.meta.platforms;
+      };
+    })));
+
+
 }
