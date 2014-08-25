@@ -149,7 +149,8 @@ rec {
       pname = "word-trie";
       version = helpers.getCabalVersion (src + "/word-trie.cabal");
       src = <word-trie>;
-      buildDepends = with haskellPackages; [ binary ];
+      buildDepends = with haskellPackages; [ binary derive ];
+      testDepends = with haskellPackages; [ binary hspec QuickCheck ];
       meta = {
         homepage = "https://github.com/yi-editor/yi";
         description = "Implementation of a finite trie over words";
