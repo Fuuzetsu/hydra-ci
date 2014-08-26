@@ -131,6 +131,7 @@ rec {
         extension = se: su: rec {
           ghcMod = se.ghcMod_5_0_1_1;
           split = dontCheckWith ghcVer "ghc763" su.split;
+          yiLanguage = withJob ghcVer system yi-language;
         };
       });
     in
@@ -139,7 +140,7 @@ rec {
       version = helpers.getCabalVersion (src + "/yi-haskell-utils.cabal");
       src = <yi-haskell-utils>;
       buildDepends = with haskellPackages; [
-        dataDefault derive ghcMod lens network PastePipe split yiJob
+        dataDefault derive ghcMod lens network PastePipe split yiJob yiLanguage
       ];
       meta = {
         homepage = "https://github.com/Fuuzetsu/yi-haskell-utils";
