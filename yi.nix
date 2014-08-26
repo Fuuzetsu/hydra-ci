@@ -206,8 +206,12 @@ rec {
       version = helpers.getCabalVersion (src + "/yi-language.cabal");
       src = <yi-language>;
       buildDepends = with haskellPackages; [
-        binary dataDefault hashable lens ooPrototypes pointedlist regexBase
-        regexTdfa transformersBase unorderedContainers derive
+        binary dataDefault derive hashable lens ooPrototypes pointedlist
+        regexBase regexTdfa transformersBase unorderedContainers
+      ];
+      testDepends = with haskellPackages; [
+        binary dataDefault derive hashable hspec lens pointedlist
+        QuickCheck regexBase regexTdfa transformersBase unorderedContainers
       ];
       buildTools = with haskellPackages; [ alex ];
       meta = {
