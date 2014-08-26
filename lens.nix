@@ -37,7 +37,7 @@ rec {
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
     in
-     haskellPackages.cabal.mkDerivation (lensT haskellPackages {
+     haskellPackages.cabal.mkDerivation (lensT haskellPackages rec {
        version = helpers.getCabalVersion (src + "/lens.cabal");
        src = <lens>;
      })));
