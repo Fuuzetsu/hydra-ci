@@ -41,10 +41,10 @@ rec {
         parsec pointedlist QuickCheck random regexBase regexTdfa safe
         split time transformersBase uniplate unixCompat unorderedContainers
         utf8String vty xdgBasedir tfRandom text cabalInstall wordTrie
-        ooPrototypes yiLanguage
+        ooPrototypes yiLanguage semigroups
       ] ++ (if withPango then [ pango gtk glib ] else [ ]);
       buildTools = [ haskellPackages.alex ];
-      testDepends = with haskellPackages; [ filepath HUnit QuickCheck tasty
+      testDepends = with haskellPackages; [ filepath HUnit QuickCheck tasty semigroups
                                             tastyHunit tastyQuickcheck yiLanguage ];
 
       postInstall = ''
