@@ -3,7 +3,9 @@
 }:
 
 let
-  genAttrs = (import <nixpkgs> {}).lib.genAttrs;
+  pkgs = import <nixpkgs> {};
+  genAttrs = pkgs.lib.genAttrs;
+  helpers = import ./utils.nix {};
   lensT = haskellPackages: attrs: self: ({
       pname = "lens";
       buildDepends = with haskellPackages; [
@@ -35,7 +37,10 @@ rec {
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
     in
-     haskellPackages.cabal.mkDerivation (lensT haskellPackages { version = "HEAD"; src = <lens>; })));
+     haskellPackages.cabal.mkDerivation (lensT haskellPackages {
+       version = helpers.getCabalVersion (src + "/lens.cabal");
+       src = <lens>;
+     })));
 
   lens_4_4_0_1 = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
     let
