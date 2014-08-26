@@ -16,10 +16,13 @@ rec {
     let
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackagesP = pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
+      Cabal = if ghcVer == "ghc763" then haskellPackagesP.Cabal_1_20_0_2 else null;
       haskellPackages = pkgs.recurseIntoAttrs (haskellPackagesP.override {
         extension = se: su: rec {
-          Cabal = if ghcVer == "ghc763" then haskellPackagesP.Cabal_1_20_0_2 else null;
-          cabal = su.cabal.override { Cabal = Cabal; };
+          cairo = su.cairo.override { cabal = su.cabal.override { Cabal = Cabal; }; };
+          pango = su.pango.override { cabal = su.cabal.override { Cabal = Cabal; }; };
+          glib = su.glib.override { cabal = su.cabal.override { Cabal = Cabal; }; };
+          gtk = su.gtk.override { cabal = su.cabal.override { Cabal = Cabal; }; };
           split = dontCheckWith ghcVer "ghc763" su.split;
           wordTrie = withJob ghcVer system word-trie;
           ooPrototypes = withJob ghcVer system oo-prototypes;
