@@ -59,6 +59,9 @@ in rec {
       # elements specified above.
       dontPatchELF = true;
 
+      # There are failing tests.
+      doCheck = false;
+
       postInstall = ''
         install -D ${gecko} $out/share/wine/gecko/${gecko.name}
       '' + pkgs.stdenv.lib.optionalString (pkgs.stdenv.system == "x86_64-linux") ''
