@@ -1,0 +1,16 @@
+@@ -, +, @@
+---
+ dlls/imm32/imm.c | 2 --
+ 1 file changed, 2 deletions(-)
+--- a/dlls/imm32/imm.c
++++ a/dlls/imm32/imm.c
+@@ -1424,8 +1424,6 @@ HIMC WINAPI ImmGetContext(HWND hWnd)
+     rc = GetPropW(hWnd,szwWineIMCProperty);
+     if (rc == (HIMC)-1)
+         rc = NULL;
+-    else if (rc == NULL)
+-        rc = IMM_GetThreadData()->defaultContext;
+
+     if (rc)
+     {
+--
