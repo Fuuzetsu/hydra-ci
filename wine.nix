@@ -35,6 +35,7 @@ in rec {
 
       patches = [ ./ffxia.patch ];
 
+      preConfigure = "export HOME=$TMPDIR";
       buildInputs = with pkgs; [
         pkgconfig
         xlibs.xlibs flex bison xlibs.libXi mesa mesa_noglu.osmesa
