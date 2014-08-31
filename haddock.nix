@@ -4,6 +4,7 @@
 
 let
   genAttrs = (import <nixpkgs> {}).lib.genAttrs;
+  helpers = import ./utils.nix {};
 in
 rec {
 
@@ -13,9 +14,9 @@ rec {
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       haddockApiJob = pkgs.lib.getAttrFromPath [ ghcVer system ] haddockApi;
     in
-    haskellPackages.cabal.mkDerivation (self: {
+    haskellPackages.cabal.mkDerivation (self: rec {
       pname = "haddock";
-      version = "2.15.0";
+      version = helpers.getCabalVersion (src + "/haddock.cabal");
       src = <haddock-repo>;
       buildDepends = with haskellPackages; [ haddockApiJob ];
       testDepends = with haskellPackages; [ Cabal deepseq filepath hspec QuickCheck ];
@@ -31,9 +32,9 @@ rec {
       pkgs = import <nixpkgs> { inherit system; };
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
     in
-    haskellPackages.cabal.mkDerivation (self: {
+    haskellPackages.cabal.mkDerivation (self: rec {
       pname = "haddock-library";
-      version = "1.1.0";
+      version = helpers.getCabalVersion (src + "/haddock-library.cabal");
       src = <haddock-repo> + "/haddock-library";
       buildDepends = with haskellPackages; [ deepseq ];
       testDepends = with haskellPackages; [ baseCompat deepseq hspec QuickCheck ];
@@ -51,9 +52,9 @@ rec {
       haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
       haddockLibraryJob = pkgs.lib.getAttrFromPath [ ghcVer system ] haddockLibrary;
     in
-    haskellPackages.cabal.mkDerivation (self: {
+    haskellPackages.cabal.mkDerivation (self: rec {
       pname = "haddock-api";
-      version = "2.15.0";
+      version = helpers.getCabalVersion (src + "/haddock-api.cabal");
       src = <haddock-repo> + "/haddock-api";
       buildDepends = with haskellPackages;
                        [ Cabal deepseq filepath ghcPaths xhtml haddockLibraryJob
