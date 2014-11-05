@@ -49,5 +49,5 @@ in rec {
 
  # Default compilers and platforms, overriding src only.
  haskellWithDefaults = exprLoc: srcLoc:
-   haskellFromLocalWithVer defaultCompilers defaultPlatforms exprLoc (attrs: { src = srcLoc; });
+   haskellFromLocal defaultCompilers defaultPlatforms exprLoc (attrs: { src = srcLoc; });
 }

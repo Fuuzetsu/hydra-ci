@@ -1,4 +1,4 @@
-{ utils ? import ./utils.nix }:
+{ utils ? import ./utils.nix {} }:
 
 rec {
 
