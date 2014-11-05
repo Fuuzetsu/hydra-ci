@@ -1,3 +1,8 @@
 { utils ? import ./utils.nix {} }:
 
-{ h-booru = utils.haskellWithDefaults (<localexprs> + "/h-booru") <h-booru>; }
+{ h-booru = utils.haskellFromLocal
+  utils.ghc763Only
+  utils.defaultPlatforms
+  (<localexprs> + "/h-booru")
+  (attrs: { src = <h-booru>; });
+}
