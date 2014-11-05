@@ -22,16 +22,25 @@ in rec {
     buildInputs = map (exprPkgs.lib.getAttrFromPath [ ghcVer system ]) ps ++ attrs.buildInputs;
   };
 
+  setSrc = srcLoc: ghcVer: system: exprPkgs: attrs: { src = srcLoc; };
+
   getCabalVersion = file: extractVersion (findVersion (lines (readFile file)));
 
-  haskellFromLocalWithVer = comps: plats: exprLoc: overrides: genAttrs comps (ghcVer: genAttrs plats (system:
+  haskellFromLocalWithVerSet = comps: plats: exprLoc: overrides: extSet:
+    genAttrs comps (ghcVer: genAttrs plats (system:
     let
       exprPkgs = import <nixpkgs> { inherit system; };
       haskellPackages = exprPkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] exprPkgs;
+      overHaskellPackages = exprPkgs.recurseIntoAttrs (haskellPackages.override {
+        extension = extSet;
+      };
     in exprPkgs.lib.overrideDerivation
-         (haskellPackages.callPackage exprLoc {})
+         (overHaskellPackages.callPackage exprLoc {})
          (overrides ghcVer system exprPkgs)
   ));
+
+  haskellFromLocalWithVer = comps: plats: exprLoc: overrides:
+    haskellFromLocalWithVerSet comps plats exprLoc overrides (self: super: {});
 
   # Generate Haskell derivation from given compilers, platforms,
   # expression path and overrides.
@@ -40,5 +49,5 @@ in rec {
 
  # Default compilers and platforms, overriding src only.
  haskellWithDefaults = exprLoc: srcLoc:
-   haskellFromLocal defaultCompilers defaultPlatforms exprLoc (attrs: { src = srcLoc; });
+   haskellFromLocal defaultCompilers defaultPlatforms exprLoc (setSrc srcLoc);
 }
