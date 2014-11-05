@@ -33,7 +33,7 @@ in rec {
       haskellPackages = exprPkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] exprPkgs;
       overHaskellPackages = exprPkgs.recurseIntoAttrs (haskellPackages.override {
         extension = extSet;
-      };
+      });
     in exprPkgs.lib.overrideDerivation
          (overHaskellPackages.callPackage exprLoc {})
          (overrides ghcVer system exprPkgs)
@@ -49,5 +49,5 @@ in rec {
 
  # Default compilers and platforms, overriding src only.
  haskellWithDefaults = exprLoc: srcLoc:
-   haskellFromLocal defaultCompilers defaultPlatforms exprLoc (setSrc srcLoc);
+   haskellFromLocalWithVer defaultCompilers defaultPlatforms exprLoc (attrs: { src = srcLoc; });
 }
