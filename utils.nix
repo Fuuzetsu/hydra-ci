@@ -30,9 +30,10 @@ in rec {
     genAttrs comps (ghcVer: genAttrs plats (system:
     let
       exprPkgs = import <nixpkgs> { inherit system; };
+      getByPath = exprPkgs.lib.getAttrFromPath [ ghcVer system ];
       haskellPackages = exprPkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] exprPkgs;
       overHaskellPackages = exprPkgs.recurseIntoAttrs (haskellPackages.override {
-        extension = extSet;
+        extension = self: super: exprPkgs.lib.attrsets.mapAttrs getByPath extSet;
       });
     in exprPkgs.lib.overrideDerivation
          (overHaskellPackages.callPackage exprLoc {})
@@ -40,7 +41,7 @@ in rec {
   ));
 
   haskellFromLocalWithVer = comps: plats: exprLoc: overrides:
-    haskellFromLocalWithVerSet comps plats exprLoc overrides (self: super: {});
+    haskellFromLocalWithVerSet comps plats exprLoc overrides {};
 
   # Generate Haskell derivation from given compilers, platforms,
   # expression path and overrides.
