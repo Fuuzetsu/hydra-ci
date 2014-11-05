@@ -12,7 +12,7 @@ inherit (builtins) readFile head filter;
 
 in rec {
   ghc763Only = [ "ghc763" ];
-  ghc763Only = [ "ghc763" ];
+  ghc783Only = [ "ghc783" ];
   defaultPlatforms = [ "i686-linux" "x86_64-linux" ];
   defaultCompilers = ghc763Only ++ ghc783Only;
 
