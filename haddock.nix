@@ -1,10 +1,11 @@
 { supportedPlatforms ? [ "i686-linux" "x86_64-linux" ]
 , supportedCompilers ? [ "ghc742" "ghc763" "ghc783" ]
+, utils ? import ./utils.nix {}
 }:
 
 let
   genAttrs = (import <nixpkgs> {}).lib.genAttrs;
-  helpers = import ./utils.nix {};
+  helpers = utils;
 in
 rec {
 
@@ -27,24 +28,11 @@ rec {
       preCheck = "unset GHC_PACKAGE_PATH";
     })));
 
-  haddockLibrary = genAttrs supportedCompilers (ghcVer: genAttrs supportedPlatforms (system:
-    let
-      pkgs = import <nixpkgs> { inherit system; };
-      haskellPackages =  pkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] pkgs;
-    in
-    haskellPackages.cabal.mkDerivation (self: rec {
-      pname = "haddock-library";
-      version = helpers.getCabalVersion (src + "/haddock-library.cabal");
-      src = <haddock-repo> + "/haddock-library";
-      buildDepends = with haskellPackages; [ deepseq ];
-      testDepends = with haskellPackages; [ baseCompat deepseq hspec QuickCheck ];
-      meta = {
-        homepage = "http://www.haskell.org/haddock/";
-        description = "Library exposing some functionality of Haddock";
-        license = self.stdenv.lib.licenses.bsd3;
-        platforms = self.ghc.meta.platforms;
-      };
-    })));
+  haddockLibrary = utils.haskellFromLocal
+    [ "ghc742" "ghc763" "ghc783" ]
+    utils.defaultPlatforms
+    (<localexprs> + "/haddock-library")
+    (attrs: { src = <haddock-repo> + "/haddock-library"; });
 
   haddockApi = genAttrs [ "ghc783" ] (ghcVer: genAttrs supportedPlatforms (system:
     let
