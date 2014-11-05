@@ -13,13 +13,12 @@ rec {
     utils.defaultPlatforms
     (<localexprs> + "/yi")
     (utils.setSrc <yi>)
-    (self: super: {
-      dynamicState = dynamic-state;
+    { dynamicState = dynamic-state;
       ooPrototypes = oo-prototypes;
       wordTrie = word-trie;
       yiLanguage = yi-language;
       yiRope = yi-rope;
-    });
+    };
 
   yi-emacs-colours = utils.haskellFromLocalWithVerSet
     utils.defaultCompilers

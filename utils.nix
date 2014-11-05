@@ -30,7 +30,7 @@ in rec {
     genAttrs comps (ghcVer: genAttrs plats (system:
     let
       exprPkgs = import <nixpkgs> { inherit system; };
-      getByPath = exprPkgs.lib.getAttrFromPath [ ghcVer system ];
+      getByPath = _: exprPkgs.lib.getAttrFromPath [ ghcVer system ];
       haskellPackages = exprPkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] exprPkgs;
       overHaskellPackages = exprPkgs.recurseIntoAttrs (haskellPackages.override {
         extension = self: super: exprPkgs.lib.attrsets.mapAttrs getByPath extSet;
