@@ -59,7 +59,7 @@ in rec {
   haskellFromLocal = comps: plats: exprLoc: overrides:
     haskellFromLocalWithVer comps plats exprLoc (ghcVer: system: exprPkgs: overrides);
 
- # Default compilers and platforms, overriding src only.
+ # Default compilers and all platforms, overriding src only.
  haskellWithDefaults = exprLoc: srcLoc:
-   haskellFromLocal defaultCompilers defaultPlatforms exprLoc (attrs: { src = srcLoc; });
+   haskellFromLocal defaultCompilers allPlatforms exprLoc (attrs: { src = srcLoc; });
 }
