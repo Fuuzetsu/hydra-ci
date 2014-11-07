@@ -13,9 +13,14 @@ inherit (builtins) readFile head filter;
 in rec {
   ghc763 = "ghc763";
   ghc783 = "ghc783";
+  i686 = "i686-linux";
+  x86_64 = "x86_64-linux";
   ghc763Only = [ ghc763 ];
   ghc783Only = [ ghc783 ];
-  defaultPlatforms = [ "i686-linux" "x86_64-linux" ];
+  i686Only = [ i686 ];
+  x86_64Only = [ x86_64 ];
+  allPlatforms = i686Only ++ x86_64Only;
+  defaultPlatforms = x86_64Only;
   defaultCompilers = ghc763Only ++ ghc783Only;
 
   # Shorthand for common pattern
