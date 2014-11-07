@@ -11,8 +11,10 @@ let strs = pkgs.lib.strings;
 inherit (builtins) readFile head filter;
 
 in rec {
-  ghc763Only = [ "ghc763" ];
-  ghc783Only = [ "ghc783" ];
+  ghc763 = "ghc763";
+  ghc783 = "ghc783";
+  ghc763Only = [ ghc763 ];
+  ghc783Only = [ ghc783 ];
   defaultPlatforms = [ "i686-linux" "x86_64-linux" ];
   defaultCompilers = ghc763Only ++ ghc783Only;
 
@@ -33,7 +35,11 @@ in rec {
       getByPath = _: exprPkgs.lib.getAttrFromPath [ ghcVer system ];
       haskellPackages = exprPkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] exprPkgs;
       overHaskellPackages = exprPkgs.recurseIntoAttrs (haskellPackages.override {
-        extension = self: super: exprPkgs.lib.attrsets.mapAttrs getByPath extSet;
+        extension = self: super: {
+          cabal = super.cabal.override {
+            Cabal = if ghcVer == ghc763 then haskellPackages.Cabal_1_20_0_2 else null;
+          };
+        } // exprPkgs.lib.attrsets.mapAttrs getByPath extSet;
       });
     in exprPkgs.lib.overrideDerivation
          (overHaskellPackages.callPackage exprLoc {})
