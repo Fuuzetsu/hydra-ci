@@ -41,9 +41,14 @@ in rec {
       haskellPackages = exprPkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] exprPkgs;
       overHaskellPackages = exprPkgs.recurseIntoAttrs (haskellPackages.override {
         extension = self: super: {
+          # Some packages need new Cabal so force it on 7.6.3
           cabal = super.cabal.override {
             Cabal = if ghcVer == ghc763 then haskellPackages.Cabal_1_20_0_2 else null;
           };
+
+          # For some weird reason, split test-suite spins up forever
+          # on i686 with newer Cabal.
+          split = exprPkgs.lib.overrideDerivation super.split (_: { doCheck = ghcVer != ghc763; });
         } // exprPkgs.lib.attrsets.mapAttrs getByPath extSet;
       });
     in exprPkgs.lib.overrideDerivation
