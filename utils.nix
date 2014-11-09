@@ -39,12 +39,16 @@ in rec {
       exprPkgs = import <nixpkgs> { inherit system; };
       getByPath = _: exprPkgs.lib.getAttrFromPath [ ghcVer system ];
       haskellPackages = exprPkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] exprPkgs;
+      Cabal = if ghcVer == ghc763 then haskellPackages.Cabal_1_20_0_2 else null;
+      forceCabal = p: super: p.override { cabal = super.cabal.override { Cabal = Cabal; }; };
       overHaskellPackages = exprPkgs.recurseIntoAttrs (haskellPackages.override {
         extension = self: super: {
           # Some packages need new Cabal so force it on 7.6.3
-          cabal = super.cabal.override {
-            Cabal = if ghcVer == ghc763 then haskellPackages.Cabal_1_20_0_2 else null;
-          };
+          cairo = forceCabal super.cairo super;
+          glib = forceCabal super.glib super;
+          gtk = forceCabal super.gtk super;
+          pango = forceCabal super.pango super;
+          vty = forceCabal super.vty super;
 
           # For some weird reason, split test-suite spins up forever
           # on i686 with newer Cabal.
