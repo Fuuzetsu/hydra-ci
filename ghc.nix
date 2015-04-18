@@ -1,6 +1,6 @@
 { pkgs ? (import <nixpkgs> {})
 , stdenv ? pkgs.stdenv
-, ghc ? pkgs.ghc.ghc783
+, ghc ? pkgs.ghc.ghc784
 , perl ? pkgs.perl
 , gmp ? pkgs.gmp
 , ncurses ? pkgs.ncurses

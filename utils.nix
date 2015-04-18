@@ -12,16 +12,18 @@ inherit (builtins) readFile head filter;
 
 in rec {
   ghc763 = "ghc763";
-  ghc783 = "ghc783";
+  ghc784 = "ghc784";
+  ghc7101 = "ghc7101";
   i686 = "i686-linux";
   x86_64 = "x86_64-linux";
   ghc763Only = [ ghc763 ];
-  ghc783Only = [ ghc783 ];
+  ghc784Only = [ ghc784 ];
+  ghc7101Only = [ ghc7101 ];
   i686Only = [ i686 ];
   x86_64Only = [ x86_64 ];
   allPlatforms = i686Only ++ x86_64Only;
   defaultPlatforms = x86_64Only;
-  defaultCompilers = ghc763Only ++ ghc783Only;
+  defaultCompilers = ghc763Only ++ ghc784Only ++ ghc7101Only;
 
   # Shorthand for common pattern
   withExtraBuildInputs = srcLoc: ps: ghcVer: system: exprPkgs: attrs: {
@@ -38,17 +40,19 @@ in rec {
     let
       exprPkgs = import <nixpkgs> { inherit system; };
       getByPath = _: exprPkgs.lib.getAttrFromPath [ ghcVer system ];
-      haskellPackages = exprPkgs.lib.getAttrFromPath ["haskellPackages_${ghcVer}"] exprPkgs;
+      haskellPackages = exprPkgs.lib.getAttrFromPath ["haskell-ng" "packages" "${ghcVer}"] exprPkgs;
       Cabal = if ghcVer == ghc763 then haskellPackages.Cabal_1_20_0_2 else null;
       forceCabal = p: super: p.override { cabal = super.cabal.override { Cabal = Cabal; }; };
       overHaskellPackages = exprPkgs.recurseIntoAttrs (haskellPackages.override {
-        extension = self: super: {
+        overrides = self: super: {
           # Some packages need new Cabal so force it on 7.6.3
+          /*
           cairo = forceCabal super.cairo super;
           glib = forceCabal super.glib super;
           gtk = forceCabal super.gtk super;
           pango = forceCabal super.pango super;
           vty = forceCabal super.vty super;
+          */
 
           # For some weird reason, split test-suite spins up forever
           # on i686 with newer Cabal.
