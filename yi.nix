@@ -13,11 +13,11 @@ rec {
     utils.defaultPlatforms
     (<localexprs> + "/yi")
     (utils.setSrc <yi>)
-    { dynamicState = dynamic-state;
-      ooPrototypes = oo-prototypes;
-      wordTrie = word-trie;
-      yiLanguage = yi-language;
-      yiRope = yi-rope;
+    { dynamic-state = dynamic-state;
+      oo-prototypes = oo-prototypes;
+      word-trie = word-trie;
+      yi-language = yi-language;
+      yi-rope = yi-rope;
     };
 
   yi-emacs-colours = utils.haskellFromLocalWithVerSet
@@ -32,21 +32,21 @@ rec {
     utils.defaultPlatforms
     (<localexprs> + "/yi-fuzzy-open")
     (utils.setSrc <yi-fuzzy-open>)
-    { yi = yi; yiLanguage = yi-language; yiRope = yi-rope; };
+    { yi = yi; yi-language = yi-language; yi-rope = yi-rope; };
 
   yi-haskell-utils = utils.haskellFromLocalWithVerSet
     utils.defaultCompilers
     utils.defaultPlatforms
     (<localexprs> + "/yi-haskell-utils")
     (utils.setSrc <yi-haskell-utils>)
-    { yi = yi; yiLanguage = yi-language; yiRope = yi-rope; };
+    { yi = yi; yi-language = yi-language; yi-rope = yi-rope; };
 
   yi-language = utils.haskellFromLocalWithVerSet
     utils.defaultCompilers
     utils.defaultPlatforms
     (<localexprs> + "/yi-language")
     (utils.setSrc <yi-language>)
-    { ooPrototypes = oo-prototypes; };
+    { oo-prototypes = oo-prototypes; };
 
   yi-monokai = utils.haskellFromLocalWithVerSet
     utils.defaultCompilers
@@ -62,5 +62,5 @@ rec {
     utils.defaultPlatforms
     (<localexprs> + "/yi-snippet")
     (utils.setSrc <yi-snippet>)
-    { yi = yi; yiRope = yi-rope; };
+    { yi = yi; yi-rope = yi-rope; };
 }
