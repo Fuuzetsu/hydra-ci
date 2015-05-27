@@ -40,7 +40,7 @@ in rec {
     let
       exprPkgs = import <nixpkgs> { inherit system; };
       getByPath = _: exprPkgs.lib.getAttrFromPath [ ghcVer system ];
-      haskellPackages = exprPkgs.lib.getAttrFromPath ["haskell-ng" "packages" "${ghcVer}"] exprPkgs;
+      haskellPackages = exprPkgs.lib.getAttrFromPath ["haskell" "packages" "${ghcVer}"] exprPkgs;
       Cabal = if ghcVer == ghc763 then haskellPackages.Cabal_1_20_0_2 else null;
       forceCabal = p: super: p.override { cabal = super.cabal.override { Cabal = Cabal; }; };
       overHaskellPackages = exprPkgs.recurseIntoAttrs (haskellPackages.override {
