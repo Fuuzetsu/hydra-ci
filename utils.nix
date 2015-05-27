@@ -23,7 +23,7 @@ in rec {
   x86_64Only = [ x86_64 ];
   allPlatforms = i686Only ++ x86_64Only;
   defaultPlatforms = x86_64Only;
-  defaultCompilers = ghc763Only ++ ghc784Only ++ ghc7101Only;
+  defaultCompilers = ghc784Only ++ ghc7101Only;
 
   # Shorthand for common pattern
   withExtraBuildInputs = srcLoc: ps: ghcVer: system: exprPkgs: attrs: {
